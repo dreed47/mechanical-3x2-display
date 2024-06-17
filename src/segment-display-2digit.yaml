@@ -14,6 +14,12 @@ wifi:
 
 logger:
 
+globals:
+  - id: previous_position
+    type: int
+    restore_value: no
+    initial_value: '0'
+
 api:
   services:
     - service: set_servo_positions
@@ -21,31 +27,31 @@ api:
         position: int
       then:
         - logger.log:
-            format: "GOT HERE!!! position: %d"
+            format: "set_servo_positions api called... position: %d"
             args: [ 'position' ]
         - lambda: |-
             auto map_digit_to_angle = [](int digit) -> float {
               switch (digit) {
                 case 0:
-                  return 180;
+                  return 165;
                 case 1:
-                  return 5;
+                  return 180;
                 case 2:
-                  return 23;
+                  return 20;
                 case 3:
                   return 43;
                 case 4:
                   return 60;
                 case 5:
-                  return 80;
+                  return 75;
                 case 6:
-                  return 100;
+                  return 90;
                 case 7:
-                  return 120;
+                  return 110;
                 case 8:
-                  return 140;
+                  return 130;
                 case 9:
-                  return 160;
+                  return 150;
                 default:
                   return 0;
               }
@@ -65,6 +71,39 @@ api:
 
             id(pwm_output1).set_level(level_servo1 / 100.0);
             id(pwm_output2).set_level(level_servo2 / 100.0);
+
+            // Determine if position increased or decreased and play the corresponding tone
+            if (position > id(previous_position)) {
+              ESP_LOGD("custom", "Position increased, playing ascending tone");
+              id(play_tone_ascending).execute();
+            } else if (position < id(previous_position)) {
+              ESP_LOGD("custom", "Position decreased, playing descending tone");
+              id(play_tone_descending).execute();
+            }
+
+            // Update previous position
+            id(previous_position) = position;            
+
+    - service: set_servo_angle
+      variables:
+        angle1: float
+        angle2: float
+      then:
+        - lambda: |-
+            float level_servo1 = (angle1 / 180.0) * 10.0 + 2.5;
+            float level_servo2 = (angle2 / 180.0) * 10.0 + 2.5;
+
+            ESP_LOGD("custom", "Setting servo1 to angle %f, which corresponds to level %f", angle1, level_servo1);
+            ESP_LOGD("custom", "Setting servo2 to angle %f, which corresponds to level %f", angle2, level_servo2);
+
+            id(pwm_output1).set_level(level_servo1 / 100.0);
+            id(pwm_output2).set_level(level_servo2 / 100.0);
+
+    - service: play_rtttl_string
+      variables:
+        tune: string
+      then:
+        - rtttl.play: !lambda 'return tune;'
 
 ota:
   password: !secret ota_password
@@ -105,17 +144,13 @@ script:
     then:
       - delay: 1s
       - lambda: |-
-          float initial_angle1 = 90;
-          float initial_angle2 = 90;
+          float initial_angle1 = 75;
+          float initial_angle2 = 75;
           float initial_level1 = (initial_angle1 / 180.0) * 10.0 + 2.5;
           float initial_level2 = (initial_angle2 / 180.0) * 10.0 + 2.5;
           id(pwm_output1).set_level(initial_level1 / 100.0);
           id(pwm_output2).set_level(initial_level2 / 100.0);
       - delay: 1s
-      - rtttl.play: "success:d=24,o=5,b=100:c,g,b"
-
-   - id: play_success_tone
-    then:
       - rtttl.play: "success:d=24,o=5,b=100:c,g,b"
 
   - id: play_tone_ascending
@@ -125,3 +160,4 @@ script:
   - id: play_tone_descending
     then:
       - rtttl.play: "descending:d=8,o=5,b=140:e,d,c"
+ 
