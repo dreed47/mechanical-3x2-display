@@ -7,7 +7,6 @@ esphome:
     then:
       - script.execute: initialize_servos
 
-
 wifi:
   ssid: !secret wifi_ssid
   password: !secret wifi_password
@@ -66,6 +65,15 @@ api:
             id(pwm_output1).set_level(level_servo1 / 100.0);
             id(pwm_output2).set_level(level_servo2 / 100.0);
 
+            // Play tone based on position change
+            if (position > id(prev_position)) {
+              id(play_tone_ascending).execute();
+            } else if (position < id(prev_position)) {
+              id(play_tone_descending).execute();
+            }
+
+            id(prev_position) = position;
+
 ota:
   password: !secret ota_password
 
@@ -81,7 +89,7 @@ output:
     id: pwm_output2
 
   - platform: esp8266_pwm
-    pin: D7
+    pin: GPIO0  # Corresponds to D3
     id: buzzer_output
 
 servo:
@@ -95,11 +103,6 @@ servo:
     min_level: 2.5%
     max_level: 12.5%
 
-# Define buzzer as output for RTTTL
-rtttl:
-  output: buzzer_output
-
-# Set an initial position to wake up the servos
 script:
   - id: initialize_servos
     then:
@@ -112,16 +115,45 @@ script:
           id(pwm_output1).set_level(initial_level1 / 100.0);
           id(pwm_output2).set_level(initial_level2 / 100.0);
       - delay: 1s
-      - rtttl.play: "success:d=24,o=5,b=100:c,g,b"
-
-   - id: play_success_tone
-    then:
-      - rtttl.play: "success:d=24,o=5,b=100:c,g,b"
 
   - id: play_tone_ascending
     then:
-      - rtttl.play: "ascending:d=8,o=5,b=140:c,d,e"
+      - output.set_level:
+          id: buzzer_output
+          level: 1.0
+      - delay: 200ms
+      - output.set_level:
+          id: buzzer_output
+          level: 0.0
+      - delay: 200ms
+      - output.set_level:
+          id: buzzer_output
+          level: 1.0
+      - delay: 400ms
+      - output.set_level:
+          id: buzzer_output
+          level: 0.0
 
   - id: play_tone_descending
     then:
-      - rtttl.play: "descending:d=8,o=5,b=140:e,d,c"
+      - output.set_level:
+          id: buzzer_output
+          level: 1.0
+      - delay: 400ms
+      - output.set_level:
+          id: buzzer_output
+          level: 0.0
+      - delay: 200ms
+      - output.set_level:
+          id: buzzer_output
+          level: 1.0
+      - delay: 200ms
+      - output.set_level:
+          id: buzzer_output
+          level: 0.0
+
+globals:
+  - id: prev_position
+    type: int
+    restore_value: no
+    initial_value: '0'
