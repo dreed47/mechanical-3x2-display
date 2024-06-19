@@ -49,7 +49,7 @@ api:
                 case 7:
                   return 110;
                 case 8:
-                  return 130;
+                  return 125;
                 case 9:
                   return 150;
                 default:
