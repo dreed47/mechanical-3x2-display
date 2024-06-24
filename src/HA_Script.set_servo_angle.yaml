@@ -1,0 +1,29 @@
+alias: Set Servo Angle from Number
+mode: single
+fields:
+  input:
+    description: The 2-digit number
+    example: 35
+sequence:
+  - variables:
+      input: "{{ input | int }}"
+      ones: "{{ (input % 10) }}"
+      tens: "{{ (input // 10) }}"
+      angle1_map: >
+        {% set angle_map = dict({8: 165, 9: 180, 0: 20, 1: 43, 2: 60, 3: 75, 4:
+        90, 5: 110, 6: 135, 7: 150}) %} {{ angle_map }}
+      angle2_map: >
+        {% set angle_map = dict({0: 165, 1: 180, 2: 20, 3: 43, 4: 60, 5: 75, 6:
+        90, 7: 110, 8: 135, 9: 150}) %} {{ angle_map }}
+      angle1: "{{ angle1_map[ones] | float }}"
+      angle2: "{{ angle2_map[tens] | float }}"
+  - service: persistent_notification.create
+    data:
+      title: Servo Angle Calculation
+      message: >
+        Input: {{ input }}, Ones: {{ ones }}, Tens: {{ tens }} Calculated
+        angles: angle1={{ angle1 }}, angle2={{ angle2 }}
+  - service: esphome.digital_thermometer_set_servo_angle
+    data:
+      angle1: "{{ angle1 }}"
+      angle2: "{{ angle2 }}"

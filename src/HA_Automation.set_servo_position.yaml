@@ -1,0 +1,9 @@
+alias: Set Servo Position
+description: ""
+trigger:
+  - platform: state
+    entity_id: input_select.servo_position
+action:
+  - service: esphome.digital_thermometer_set_servo_positions
+    data_template:
+      position: "{{ trigger.to_state.state | float | round(0) | int }}"
