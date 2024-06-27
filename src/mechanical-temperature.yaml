@@ -1,5 +1,10 @@
+substitutions:
+  name: mechanical-thermometer
+  friendly_name: Mechanical Thermometer
+  
 esphome:
-  name: "digital-thermometer"
+  name: $name
+  friendly_name: $friendly_name
   platform: ESP8266
   board: d1_mini
   on_boot:

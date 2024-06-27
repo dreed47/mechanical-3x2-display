@@ -1,6 +1,10 @@
-esphome:
+substitutions:
   name: mechanical-humidity
-  friendly_name: mechanical-humidity
+  friendly_name: Mechanical Humidity
+  
+esphome:
+  name: $name
+  friendly_name: $friendly_name
   platform: ESP8266
   board: d1_mini
   on_boot:
@@ -46,11 +50,11 @@ api:
                 case 4:
                   return 60;
                 case 5:
-                  return 77;
+                  return 75;
                 case 6:
-                  return 98;
+                  return 90;
                 case 7:
-                  return 115;
+                  return 110;
                 case 8:
                   return 135;
                 case 9:
@@ -76,13 +80,13 @@ api:
             id(pwm_output2).set_level(level_servo2 / 100.0);
 
             // Determine if position increased or decreased and play the corresponding tone
-          #  if (position > id(previous_position)) {
-          #    ESP_LOGD("custom", "Position increased, playing ascending tone");
-          #    id(play_tone_ascending).execute();
-          #  } else if (position < id(previous_position)) {
-          #    ESP_LOGD("custom", "Position decreased, playing descending tone");
-          #    id(play_tone_descending).execute();
-          #  }
+            if (position > id(previous_position)) {
+              ESP_LOGD("custom", "Position increased, playing ascending tone");
+              // id(play_tone_ascending).execute();
+            } else if (position < id(previous_position)) {
+              ESP_LOGD("custom", "Position decreased, playing descending tone");
+              // id(play_tone_descending).execute();
+            }
 
             // Update previous position
             id(previous_position) = position;            
