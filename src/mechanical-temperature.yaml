@@ -26,6 +26,8 @@ globals:
     initial_value: '0'
 
 api:
+  encryption:
+    key: !secret encryption_key
   services:
     - service: set_servo_positions
       variables:

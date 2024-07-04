@@ -1,0 +1,42 @@
+sequence:
+  - service: weather.get_forecasts
+    data:
+      type: hourly
+    target:
+      entity_id: weather.forecast_weather_hub
+    response_variable: forecast_data
+  - variables:
+      forecast_raw: "{{ forecast_data['weather.forecast_weather_hub'].forecast }}"
+      forecast: "{{ forecast_raw }}"
+  - service: persistent_notification.create
+    data:
+      message: "Forecast data: {{ forecast }}"
+      title: Debug Notification
+    enabled: false
+  - variables:
+      num_forecasts: "{{ states('input_number.number_of_forecasts') | int }}"
+      rain_prob: |
+        {% if forecast %}
+          {% set rain_prob = forecast[:num_forecasts] | map(attribute='precipitation_probability') | list %}
+          {{ rain_prob }}
+        {% else %}
+          []
+        {% endif %}
+  - service: persistent_notification.create
+    data:
+      message: "Rain probabilities: {{ rain_prob }}"
+      title: Debug Notification
+  - service: input_number.set_value
+    data_template:
+      entity_id: input_number.precipitation_probability_next_hour
+      value: |
+        {% if rain_prob %}
+          {{ rain_prob | max }}
+        {% else %}
+          0
+        {% endif %}
+  - service: system_log.write
+    data:
+      message: "forecast data: {{ rain_prob }}"
+      level: info
+      enabled: false

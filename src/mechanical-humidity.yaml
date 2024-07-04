@@ -27,7 +27,7 @@ globals:
 
 api:
   encryption:
-    key: Yp0A+2NW0YK9spEW4DMzZ4AbRhODzkoh5sn7XsLFrsE=
+    key: !secret encryption_key
   services:
     - service: set_servo_positions
       variables:
@@ -52,9 +52,9 @@ api:
                 case 5:
                   return 75;
                 case 6:
-                  return 90;
+                  return 95;
                 case 7:
-                  return 110;
+                  return 115;
                 case 8:
                   return 135;
                 case 9:
