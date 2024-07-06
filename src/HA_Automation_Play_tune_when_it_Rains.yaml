@@ -1,0 +1,12 @@
+alias: Play Tune When It Starts Raining
+description: Play a tune on the servo controller when it starts raining
+trigger:
+  - platform: state
+    entity_id: binary_sensor.weather_hub_binary_sensors_is_raining
+    from: "off"
+    to: "on"
+action:
+  - service: esphome.3x2digit_display_play_rtttl_string
+    data:
+      tune: Repeat:d=8,o=5,b=140:c,e,p,c,e,p,c,e,p,c,e,p
+mode: single
