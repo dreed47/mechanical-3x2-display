@@ -1,0 +1,41 @@
+alias: Update Servo12 with Temperature
+description: ""
+trigger:
+  - platform: state
+    entity_id: sensor.weather_station_temperature
+condition:
+  - condition: template
+    value_template: |
+      {% if trigger.from_state and trigger.to_state %}
+        {{ (trigger.from_state.state | float | round(0)) != (trigger.to_state.state | float | round(0)) }}
+      {% else %}
+        false
+      {% endif %}
+action:
+  - service: persistent_notification.create
+    data_template:
+      title: Temperature Change Detected
+      message: >
+        Previous temperature: {{ trigger.from_state.state | float | round(0) }}
+        °C Current temperature: {{ trigger.to_state.state | float | round(0) }}
+        °C
+    enabled: false
+  - service: script.set_servo12_angle_from_number
+    data_template:
+      input: >-
+        {{ states('sensor.weather_station_temperature') | float | round(0) | int
+        }}
+      play_tone: |-
+        {% if trigger.from_state and trigger.to_state %}
+          {% set previous_temp = trigger.from_state.state | float | round(0) %}
+          {% set current_temp = trigger.to_state.state | float | round(0) %}
+          {% if current_temp > previous_temp %}
+            ascending
+          {% elif current_temp < previous_temp %}
+            descending
+          {% else %}
+            none
+          {% endif %}
+        {% else %}
+          none
+        {% endif %}

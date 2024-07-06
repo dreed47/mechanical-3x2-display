@@ -1,10 +1,10 @@
 substitutions:
-  name: mechanical-humidity
-  friendly_name: Mechanical Humidity
+  name: 3x2digit-display
+  friendly_name: 3x2 Digit Display
   
 esphome:
-  name: 3x2digit-display
-  friendly_name: 3x2digit-display
+  name: $name
+  friendly_name: $friendly_name
   platform: ESP8266
   board: d1_mini
   on_boot:

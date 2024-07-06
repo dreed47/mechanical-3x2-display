@@ -1,0 +1,38 @@
+alias: Set Servo12 Angle from Number
+sequence:
+  - variables:
+      input: "{{ input | int }}"
+      ones: "{{ (input % 10) }}"
+      tens: "{{ (input // 10) }}"
+      play_tone: "{{ play_tone }}"
+      angle1_map: >
+        {% set angle_map1 = dict({0: 169, 1: 180, 2: 20, 3: 43, 4: 60, 5: 75, 6:
+        95, 7: 115, 8: 135, 9: 150}) %} {{ angle_map1 }}
+      angle2_map: >
+        {% set angle_map2 = dict({0: 169, 1: 180, 2: 20, 3: 43, 4: 60, 5: 75, 6:
+        95, 7: 115, 8: 135, 9: 150}) %} {{ angle_map2 }}
+      angle1: "{{ angle1_map[tens] | float }}"
+      angle2: "{{ angle2_map[ones] | float }}"
+  - service: persistent_notification.create
+    data:
+      title: Set Servo12 Angle from Number
+      message: >
+
+        Input: {{ input }}, Ones: {{ ones }}, Tens: {{ tens }} Calculated
+        angles: angle1={{ angle1 }}, angle2={{ angle2 }}  Play_tone: {{
+        play_tone }}
+    enabled: false
+  - service: esphome.3x2digit_display_set_digits_1_2_angle
+    data:
+      digit1_angle: "{{ angle1 }}"
+      digit2_angle: "{{ angle2 }}"
+      play_tone: "{{ play_tone }}"
+mode: single
+fields:
+  input:
+    description: The 2-digit number
+    example: 35
+  play_tone:
+    description: ascending or descending or none
+    example: none
+description: ""

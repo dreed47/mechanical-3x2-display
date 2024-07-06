@@ -26,6 +26,7 @@ sequence:
     data:
       message: "Rain probabilities: {{ rain_prob }}"
       title: Debug Notification
+    enabled: false
   - service: input_number.set_value
     data_template:
       entity_id: input_number.precipitation_probability_next_hour
@@ -35,8 +36,15 @@ sequence:
         {% else %}
           0
         {% endif %}
+  - service: script.set_servo_angle_from_number
+    data:
+      input: "{{ rain_prob | max }}"
   - service: system_log.write
     data:
       message: "forecast data: {{ rain_prob }}"
       level: info
       enabled: false
+    enabled: false
+alias: Get Precip Forecast
+description: ""
+icon: mdi:weather-lightning-rainy

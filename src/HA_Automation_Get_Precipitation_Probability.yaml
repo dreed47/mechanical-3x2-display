@@ -1,0 +1,8 @@
+alias: Get Precipitation Probability for Next X Hours
+description: ""
+trigger:
+  - platform: time_pattern
+    minutes: /10
+action:
+  - service: script.get_forecast_and_extract_precipitation
+    data: {}

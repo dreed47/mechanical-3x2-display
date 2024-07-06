@@ -1,0 +1,12 @@
+alias: Update Servos with Humidity
+description: ""
+trigger:
+  - platform: state
+    entity_id: sensor.weather_station_humidity
+    enabled: false
+  - platform: time_pattern
+    minutes: /20
+action:
+  - service: script.set_servo34_angle_from_number
+    data:
+      input: "{{ states('sensor.weather_station_humidity') | float | round(0) | int }}"
