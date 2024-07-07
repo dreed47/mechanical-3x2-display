@@ -1,4 +1,4 @@
-# Mechanical Temp Display
+# Mechanical 3x2 Display
 
 Notes:
 * [Model stl Files](https://engineezy.com/collections/stl-downloads/products/the-rack-driven-7-segment-display)
@@ -11,4 +11,4 @@ Notes:
 * Parts List:  
   * ESP32 D1 Mini
   * Passive Buzzer
-  * 3d printed case
+
