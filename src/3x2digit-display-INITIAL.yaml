@@ -1,0 +1,10 @@
+substitutions:
+  name: 3x2digit-display
+  friendly_name: 3x2 Digit Display
+  wifi_ssid: !secret wifi_ssid
+  wifi_password: !secret wifi_password
+  encryption_key: !secret encryption_key
+  ota_password: !secret ota_password
+
+packages:
+  remote_package: github://dreed47/mechanical-3x2-display/src/3x2digit-display.yaml@release
