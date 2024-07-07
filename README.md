@@ -11,3 +11,4 @@ Notes:
 * Parts List:  
   * ESP32 D1 Mini
   * Passive Buzzer
+  * 3d printed case
