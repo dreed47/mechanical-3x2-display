@@ -6,6 +6,9 @@ substitutions:
   encryption_key: ENCRYPTION_KEY_HERE
   ota_password: OTA_PASSWORD_HERE
 
+dashboard_import:
+  package_import_url: github://dreed47/mechanical-3x2-display/src/3x2digit-display-INITIAL.yaml@release
+
 wifi:
   ssid: $wifi_ssid
   password: $wifi_password
