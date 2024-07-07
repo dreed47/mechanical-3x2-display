@@ -8,5 +8,5 @@ trigger:
 action:
   - service: esphome.3x2digit_display_play_rtttl_string
     data:
-      tune: Repeat:d=8,o=5,b=140:c,e,p,c,e,p,c,e,p,c,e,p
+      tune: Repeat:d=8,o=5,b=140:c,e,p,c,e,p,c,e,p,c,e,p,c,e,p,c,e,p
 mode: single
