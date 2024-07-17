@@ -8,3 +8,9 @@ substitutions:
 
 packages:
   remote_package: github://dreed47/mechanical-3x2-display/src/3x2digit-display.yaml@release
+
+esphome:
+  name: $name
+  project:
+    name: 3x2digit.esphome
+    version: "1.0"  
