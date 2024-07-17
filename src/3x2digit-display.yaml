@@ -18,6 +18,9 @@ esphome:
   friendly_name: $friendly_name
   platform: ESP8266
   board: d1_mini
+  project:
+    name: 3x2digit.esphome
+    version: "1.0"  
   on_boot:
     priority: 600
     then:
